@@ -23,7 +23,13 @@ In the Bayesian Monte Carlo Markov Chain (MCMC) world, the researcher has a larg
 
 \subsection{Problem}
 
-If you use the Bayesian modeling software OpenBUGS \cite{spiegelhalter2007openbugs}, you will notice the default chain number is 2. If you use 
+If you use the Bayesian modeling software OpenBUGS \cite{spiegelhalter2007openbugs}, you will notice the default chain number is 2. If you use \cite{Rstan} you will notice the default chain number is 4 chains. In general it is accepted that more chains are better, but this is at a trade off of computation time. In complex models the difference between 2 chains and 4 could be months. However, there is a legitimate bias problem here. It is commonly observed that in some situations a model with 2 chains could reach convergence, but with 4 chains, 1 chain may diverge resulting in a non-converged solution. This is a dangerous situation: the researcher using 2 chains would assume a correct and reproducible solution, when in reality it may not be so.
+
+
+\subsection{Proposal}e above scenario is my motivation to use simulated
+
+Th
+
 
 \bibliography{mybib.bib}{}
 \bibliographystyle{plain}
