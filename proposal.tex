@@ -2,7 +2,8 @@
 \usepackage{cite}
 
 %opening
-\title{User Specification in Bayesian Modeling: A Proposal}
+\title{One Chain, Two Chains, Three Chains, Four, Five Chains, Six Chains, Seven Chains, More}
+
 \author{Zachary J. Roman}
 
 \begin{document}
@@ -10,25 +11,39 @@
 \maketitle
 
 \begin{abstract}
-	Bayesian MCMC analysis have become popular over the past decade. This is largely do to technological advances which has allowed researchers to conduct these analysis in a reasonable time frame. In early MCMC implementations it was recommended to use 2 chains and 2000 chain iterations (1000 burn in). However, this was due to computational efficiency at the time. More recently recommendations of 4 chains is common \cite{plummer2006coda}. While it is accepted that more chains and more chain iterations provides more confidence, computational restrictions make this a debate. The current study aims to explore the convergence of varying MCMC chains and chain iterations to explore the trade off of time and confidence.
-	
-	Further, it is important to identify certain situations where convergence and confidence vary. One such situation is how the prior distribution is specified (diffuse, strong correct, strong incorrect, weak correct, weak incorrect). Thus the current study aims to explore convergence of parameter estimates under the differing conditions of: Number of chains, number of chain iterations, and prior specification.
+	Bayesian MCMC analysis have become popular over the past decade. This is largely do to technological advances which has allowed researchers to conduct these analysis in a reasonable time frame. In early MCMC implementations it was recommended to use 2 chains. However, this was due to computational efficiency at the time. More recently recommendations of 4 chains is common \cite{plummer2006coda}. While it is accepted that more chains provide less bias in convergence, computational restrictions make this a debate. Further, it is important to identify certain situations where convergence and confidence vary. One such situation is how the prior distribution is specified (diffuse, strong correct, strong incorrect). Thus the current study aims to explore convergence of parameter estimates under the differing conditions of number of chains and prior specification.
 
 
 \end{abstract}
 
 \section{Introduction}
 
-In the Bayesian Monte Carlo Markov Chain (MCMC) world, the researcher has a large weight on their shoulders. Pre-specification of elements outside the model are a necessary part of the analytic process. In a simple regression model ($Y = X\beta_{1} + \beta_{0} + \epsilon$) for example, the researcher must specify: Prior distributions for both $\beta$ coefficients(most likely Cauchey), choose a number of MCMC chains (usually 2 to 4), the length of the chains (usually between 2,000 and 10,000 iterations), and proportion of chain length dedicated to burn in (Usually between 10 to 50 percent). There is a large body of literature on choices regarding priors, however I'm hard pressed to find analytic rules regarding the number of chains, chain length, and burn in proportion. 
+In the Bayesian Monte Carlo Markov Chain (MCMC) universe, the researcher has a large weight on their shoulders. Pre-specification of elements outside the model are a necessary part of the analytic process. In a simple regression model ($Y = X\beta_{1} + \beta_{0} + \epsilon$) for example, the researcher must specify: Prior distributions for both $\beta$ coefficients(most likely Cauchey), choose a number of MCMC chains (usually 2 to 4), the length of the chains (usually between 2,000 and 10,000 iterations), and proportion of chain length dedicated to burn in (Usually between 10 to 20 percent). There is a large body of literature on choices regarding priors, however I'm hard pressed to find analytic rules regarding the number of chains, chain length, and burn in proportion. 
 
 \subsection{Problem}
 
-If you use the Bayesian modeling software OpenBUGS \cite{spiegelhalter2007openbugs}, you will notice the default chain number is 2. If you use \cite{Rstan} you will notice the default chain number is 4 chains. In general it is accepted that more chains are better, but this is at a trade off of computation time. In complex models the difference between 2 chains and 4 could be months. However, there is a legitimate bias problem here. It is commonly observed that in some situations a model with 2 chains could reach convergence, but with 4 chains, 1 chain may diverge resulting in a non-converged solution. This is a dangerous situation: the researcher using 2 chains would assume a correct and reproducible solution, when in reality it may not be so.
+If you use the Bayesian modeling software OpenBUGS \cite{spiegelhalter2007openbugs}, you will notice the default chain number is 2. If you use \cite{Rstan} you will notice the default chain number is 4 chains. In general it is accepted that more chains are better, but this is at a trade off of computation time. In complex models the difference between 2 chains and 4 could be months. However, there is a legitimate bias problem here. It is commonly observed that in some situations a model with 2 chains could reach convergence, but with 4 chains, 1 chain may diverge resulting in a non-converged solution. This is a dangerous situation: the researcher using 2 chains would assume a correct and reproducible solution, while the researcher using 4 chains could feel the opposite. I have personally reproduced this situation using a multi level model with strong incorrect priors. 
 
 
-\subsection{Proposal}e above scenario is my motivation to use simulated
+\subsection{Proposal}
+The aim of the current project is to add clarity to the ambiguity in chain number selection in Bayesian MCMC analysis. To achieve this a simple Multi-Level Model will be conducted using simulated data. The model will be ran under a variety of conditions to help identify situations of problematic specifications. 
 
-Th
+\section{Method}
+
+Clustered population data will be generated using the MASS package \cite{MASS}. This allows for the specification of a covariance structure which satisfies the assumptions of a multi-level framework.
+
+
+The following multi-level model will be specified using Rstan.
+
+$$L1: \quad y_{ij} = \beta_{0j} + \beta_{1j}x_{1ij} + \epsilon_{ij} $$
+$$L2: \quad \beta_{0j} = \gamma_{00} + \gamma_{01}x_{2j} + u_{0j}$$
+$$L2: \quad \beta_{1j} = \gamma_{10} + \gamma_{11}x_{2j} + u_{1j}$$
+
+$$Overall: \quad y_{ij} = \gamma_{00} + \gamma_{01}x_{2j} + u_{0j} + \gamma_{10}x_{1ij} +  \gamma_{11}x_{2j}x_{1ij} +u_{1j}x_{1ij} + \epsilon_{ij}$$
+
+
+The model will be specified with 3 prior conditions: diffuse, strong and correct, strong and incorrect. With this in mind, the current study aims to determine the rate of convergence based on a varying number of chains (2 through 10) by prior condition (diffuse, strong and correct, strong and incorrect).
+
 
 
 \bibliography{mybib.bib}{}
